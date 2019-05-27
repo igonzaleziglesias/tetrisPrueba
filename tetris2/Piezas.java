@@ -1,34 +1,29 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package tetris2;
 
 import java.util.Random;
 import java.lang.Math;
 
-public class Formas {
+public class Piezas {
 
-    enum Tetrominoes {
-        NoShape, ZShape, SShape, LineShape,
-        TShape, SquareShape, LShape, MirroredLShape
+    enum PiezasTetris {//6 piezas relacionadas por forma con letras y una pieza"vacia"
+        NoPieza, PiezaZ, PiezaS, PiezaLinea,
+        PiezaT, PiezaCuadrado, PiezaL, PiezaLEspejo
     };
 
-    private Tetrominoes pieceShape;
+    private PiezasTetris PiezaActual;
     private int coords[][];
     private int[][][] coordsTable;
 
-    public Formas() {
-
+    public Piezas() {
         coords = new int[4][2];
-        setShape(Tetrominoes.NoShape);
+        establecerPieza(PiezasTetris.NoPieza);
 
     }
 
-    public void setShape(Tetrominoes shape) {
+    public void establecerPieza(PiezasTetris pieza) {
 
-        coordsTable = new int[][][]{
+        coordsTable = new int[][][]{//la matriz contiene todos los valores de coordenadas posibles de las piezas. 
             {{0, 0}, {0, 0}, {0, 0}, {0, 0}},
             {{0, -1}, {0, 0}, {-1, 0}, {-1, 1}},
             {{0, -1}, {0, 0}, {1, 0}, {1, 1}},
@@ -38,13 +33,16 @@ public class Formas {
             {{-1, -1}, {0, -1}, {0, 0}, {0, 1}},
             {{1, -1}, {0, -1}, {0, 0}, {0, 1}}
         };
-
+        System.out.println("nuevo");int contador=0;
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 2; ++j) {
-                coords[i][j] = coordsTable[shape.ordinal()][i][j];
+                System.out.println("contador = "+contador);
+                coords[i][j] = coordsTable[pieza.ordinal()][i][j];
+                System.out.print(coordsTable[pieza.ordinal()][i][j]+"\n");
+                contador++;
             }
         }
-        pieceShape = shape;
+        PiezaActual = pieza;
 
     }
 
@@ -64,16 +62,16 @@ public class Formas {
         return coords[index][1];
     }
 
-    public Tetrominoes getShape() {
-        return pieceShape;
+    public PiezasTetris getPieza() {
+        return PiezaActual;
     }
 
-    public void setRandomShape() {
+    public void setPìezaAleatoria() {
         Random r = new Random();
         int x = Math.abs(r.nextInt()) % 7 + 1;//numero aleatorio entre 1-7
-        System.out.println(x);
-        Tetrominoes[] values = Tetrominoes.values();
-        setShape(values[x]);
+        System.out.println(x);//prueba del numero de pieza
+        PiezasTetris[] values = PiezasTetris.values();//valor de la pieza en el enum
+        establecerPieza(values[x]);
     }
 
     public int minX() {
@@ -92,13 +90,13 @@ public class Formas {
         return m;
     }
 
-    public Formas rotateLeft() {
-        if (pieceShape == Tetrominoes.SquareShape) {
+    public Piezas GirarIzquierda() {
+        if (PiezaActual == PiezasTetris.PiezaCuadrado) {
             return this;
         }
 
-        Formas result = new Formas();
-        result.pieceShape = pieceShape;
+        Piezas result = new Piezas();
+        result.PiezaActual = PiezaActual;
 
         for (int i = 0; i < 4; ++i) {
             result.setX(i, y(i));
@@ -107,13 +105,13 @@ public class Formas {
         return result;
     }
 
-    public Formas rotateRight() {
-        if (pieceShape == Tetrominoes.SquareShape) {
+    public Piezas GirarDerecha() {
+        if (PiezaActual == PiezasTetris.PiezaCuadrado) {
             return this;
         }
 
-        Formas result = new Formas();
-        result.pieceShape = pieceShape;
+        Piezas result = new Piezas();
+        result.PiezaActual = PiezaActual;
 
         for (int i = 0; i < 4; ++i) {
             result.setX(i, -y(i));
