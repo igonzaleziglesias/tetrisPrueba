@@ -1,4 +1,3 @@
-
 package tetris2;
 
 import java.util.Random;
@@ -33,12 +32,13 @@ public class Piezas {
             {{-1, -1}, {0, -1}, {0, 0}, {0, 1}},
             {{1, -1}, {0, -1}, {0, 0}, {0, 1}}
         };
-        System.out.println("nuevo");int contador=0;
+        System.out.println("nuevo");
+        int contador = 0;
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 2; ++j) {
-                System.out.println("contador = "+contador);
+                System.out.println("contador = " + contador);
                 coords[i][j] = coordsTable[pieza.ordinal()][i][j];
-                System.out.print(coordsTable[pieza.ordinal()][i][j]+"\n");
+                System.out.print(coordsTable[pieza.ordinal()][i][j] + "\n");
                 contador++;
             }
         }

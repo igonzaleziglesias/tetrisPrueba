@@ -20,8 +20,8 @@ import tetris2.Piezas.PiezasTetris;
 
 public class Tablero extends JPanel implements ActionListener {
 
-    final int BoardWidth = 10;
-    final int BoardHeight = 22;
+    final int anchoTablero = 10;
+    final int altoTablero = 22;
 
     Timer timer;
     boolean isFallingFinished = false;
@@ -42,30 +42,30 @@ public class Tablero extends JPanel implements ActionListener {
         timer.start();
 
         statusbar = parent.getStatusBar();
-        board = new PiezasTetris[BoardWidth * BoardHeight];
-        addKeyListener(new TAdapter());
+        board = new PiezasTetris[anchoTablero * altoTablero];
+        addKeyListener(new InteraccionTeclas());
         clearBoard();
     }
 
     public void actionPerformed(ActionEvent e) {
         if (isFallingFinished) {
             isFallingFinished = false;
-            newPiece();
+            nuevaPieza();
         } else {
             oneLineDown();
         }
     }
 
     int squareWidth() {
-        return (int) getSize().getWidth() / BoardWidth;
+        return (int) getSize().getWidth() / anchoTablero;
     }
 
     int squareHeight() {
-        return (int) getSize().getHeight() / BoardHeight;
+        return (int) getSize().getHeight() / altoTablero;
     }
 
     PiezasTetris shapeAt(int x, int y) {
-        return board[(y * BoardWidth) + x];
+        return board[(y * anchoTablero) + x];
     }
 
     public void start() {
@@ -78,7 +78,7 @@ public class Tablero extends JPanel implements ActionListener {
         numLinesRemoved = 0;
         clearBoard();
 
-        newPiece();
+        nuevaPieza();
         timer.start();
     }
 
@@ -102,11 +102,11 @@ public class Tablero extends JPanel implements ActionListener {
         super.paint(g);
 
         Dimension size = getSize();
-        int boardTop = (int) size.getHeight() - BoardHeight * squareHeight();
+        int boardTop = (int) size.getHeight() - altoTablero * squareHeight();
 
-        for (int i = 0; i < BoardHeight; ++i) {
-            for (int j = 0; j < BoardWidth; ++j) {
-                PiezasTetris shape = shapeAt(j, BoardHeight - i - 1);
+        for (int i = 0; i < altoTablero; ++i) {
+            for (int j = 0; j < anchoTablero; ++j) {
+                PiezasTetris shape = shapeAt(j, altoTablero - i - 1);
                 if (shape != PiezasTetris.NoPieza) {
                     drawSquare(g, 0 + j * squareWidth(),
                             boardTop + i * squareHeight(), shape);
@@ -119,7 +119,7 @@ public class Tablero extends JPanel implements ActionListener {
                 int x = curX + curPiece.x(i);
                 int y = curY - curPiece.y(i);
                 drawSquare(g, 0 + x * squareWidth(),
-                        boardTop + (BoardHeight - y - 1) * squareHeight(),
+                        boardTop + (altoTablero - y - 1) * squareHeight(),
                         curPiece.getPieza());
             }
         }
@@ -143,7 +143,7 @@ public class Tablero extends JPanel implements ActionListener {
     }
 
     private void clearBoard() {
-        for (int i = 0; i < BoardHeight * BoardWidth; ++i) {
+        for (int i = 0; i < altoTablero * anchoTablero; ++i) {
             board[i] = PiezasTetris.NoPieza;
         }
     }
@@ -152,20 +152,20 @@ public class Tablero extends JPanel implements ActionListener {
         for (int i = 0; i < 4; ++i) {
             int x = curX + curPiece.x(i);
             int y = curY - curPiece.y(i);
-            board[(y * BoardWidth) + x] = curPiece.getPieza();
+            board[(y * anchoTablero) + x] = curPiece.getPieza();
         }
 
-        removeFullLines();
+        BorrarLineas();
 
         if (!isFallingFinished) {
-            newPiece();
+            nuevaPieza();
         }
     }
 
-    private void newPiece() {
+    private void nuevaPieza() {
         curPiece.setPìezaAleatoria();
-        curX = BoardWidth / 2 + 1;
-        curY = BoardHeight - 1 + curPiece.minY();
+        curX = anchoTablero / 2 + 1;
+        curY = altoTablero - 1 + curPiece.minY();
 
         if (!tryMove(curPiece, curX, curY)) {
             curPiece.establecerPieza(PiezasTetris.NoPieza);
@@ -179,7 +179,7 @@ public class Tablero extends JPanel implements ActionListener {
         for (int i = 0; i < 4; ++i) {
             int x = newX + newPiece.x(i);
             int y = newY - newPiece.y(i);
-            if (x < 0 || x >= BoardWidth || y < 0 || y >= BoardHeight) {
+            if (x < 0 || x >= anchoTablero || y < 0 || y >= altoTablero) {
                 return false;
             }
             if (shapeAt(x, y) != PiezasTetris.NoPieza) {
@@ -194,13 +194,13 @@ public class Tablero extends JPanel implements ActionListener {
         return true;
     }
 
-    private void removeFullLines() {
+    private void BorrarLineas() {
         int numFullLines = 0;
 
-        for (int i = BoardHeight - 1; i >= 0; --i) {
+        for (int i = altoTablero - 1; i >= 0; --i) {
             boolean lineIsFull = true;
 
-            for (int j = 0; j < BoardWidth; ++j) {
+            for (int j = 0; j < anchoTablero; ++j) {
                 if (shapeAt(j, i) == PiezasTetris.NoPieza) {
                     lineIsFull = false;
                     break;
@@ -209,9 +209,9 @@ public class Tablero extends JPanel implements ActionListener {
 
             if (lineIsFull) {
                 ++numFullLines;
-                for (int k = i; k < BoardHeight - 1; ++k) {
-                    for (int j = 0; j < BoardWidth; ++j) {
-                        board[(k * BoardWidth) + j] = shapeAt(j, k + 1);
+                for (int k = i; k < altoTablero - 1; ++k) {
+                    for (int j = 0; j < anchoTablero; ++j) {
+                        board[(k * anchoTablero) + j] = shapeAt(j, k + 1);
                     }
                 }
             }
@@ -234,7 +234,7 @@ public class Tablero extends JPanel implements ActionListener {
         };
 
         Color color = colors[shape.ordinal()];
-
+        
         g.setColor(color);
         g.fillRect(x + 1, y + 1, squareWidth() - 2, squareHeight() - 2);
 
@@ -249,7 +249,7 @@ public class Tablero extends JPanel implements ActionListener {
                 x + squareWidth() - 1, y + 1);
     }
 
-    class TAdapter extends KeyAdapter {
+    class InteraccionTeclas extends KeyAdapter {
 
         public void keyPressed(KeyEvent e) {
 
@@ -285,13 +285,6 @@ public class Tablero extends JPanel implements ActionListener {
                     break;
                 case KeyEvent.VK_SPACE:
                     dropDown();
-                    tryMove(curPiece.GirarDerecha(), curX, curY);
-                    break;
-                case 'd':
-                    oneLineDown();
-                    break;
-                case 'D':
-                    oneLineDown();
                     break;
             }
 
